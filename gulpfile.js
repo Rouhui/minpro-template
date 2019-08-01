@@ -37,7 +37,7 @@ const aliasConfig = {
 	'@Libs': _join('libs'),
 	'@Utils': _join('utils'),
 	'@Components': _join('components'),
-	'@Images': _join('img'),
+	'@Images': _join('images'),
 }
 
 /** 清除dist目录 */
