@@ -1,0 +1,83 @@
+var DateFr = {
+  symbolMap: {
+    'YY': function (date) {
+      if (typeof (date) === 'string' || typeof (date) === 'number') {
+        var d = getDate(date);
+        return d.getFullYear();
+      }
+      return date.getFullYear();
+    },
+    'MM': function (date) {
+      if (typeof (date) === 'string' || typeof (date) === 'number') {
+        var d = getDate(date);
+        return d.getMonth() + 1;
+      }
+      return date.getMonth() + 1;
+    },
+    'dd': function (date) {
+      if (typeof (date) === 'string' || typeof (date) === 'number') {
+        var d = getDate(date);
+        return d.getDate();
+      }
+      return date.getDate();
+    },
+    'hh': function (date) {
+      if (typeof (date) === 'string' || typeof (date) === 'number') {
+        var d = getDate(date);
+        return d.getHours();
+      }
+      return date.getHours();
+    },
+    'mm': function (date) {
+      if (typeof (date) === 'string' || typeof (date) === 'number') {
+        var d = getDate(date);
+        return d.getMinutes();
+      }
+      return date.getMinutes();
+    },
+    'ss': function (date) {
+      if (typeof (date) === 'string' || typeof (date) === 'number') {
+        var d = getDate(date);
+        return d.getSeconds();
+      }
+      return date.getSeconds();
+    }
+  },
+  _makeNchar: function (char, n) {
+    var str = [];
+    while (n--) {
+      str.push(char);
+    }
+    return str.join('');
+  },
+
+  alignNumber: function (num, len, char) {
+    num = num + '';
+    if (num.length > len) {
+      return num;
+    } else {
+      return DateFr._makeNchar(char, len - num.length) + num;
+    }
+  },
+
+  formatDate: function (date, fmtStr) {
+    if (fmtStr) {
+      var regx = getRegExp("(MM|mm|YY|ss|hh|dd)", "g");
+      return fmtStr.replace(regx, function (s) {
+        return DateFr.alignNumber(DateFr.symbolMap[s](date), 2, '0');
+      });
+    }
+  },
+
+  timeToSeconds: function (time) {
+    var h = DateFr.alignNumber(parseInt((time) / 3600), 2, '0');
+    var m = DateFr.alignNumber(parseInt((time % 3600) / 60), 2, '0');
+    var s = DateFr.alignNumber(parseInt((time % 3600) % 60), 2, '0');
+    return h + ":" + m + ":" + s;
+  }
+}
+
+module.exports = {
+  date: DateFr.formatDate,
+  timeToSeconds: DateFr.timeToSeconds
+}
