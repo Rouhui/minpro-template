@@ -286,41 +286,6 @@ if (typeof define === 'function' && define.amd) {
 }
 // })(this)
 
-function SignParams(data) {
-  var sign = "";
-  var paramsKey = new Array();
-  var paramsValue = new Array();
-  if (data != null && data != undefined) {
-    for (var item in data) {
-      paramsKey.push(item);
-      paramsValue[item] = data[item];
-    }
-  }
-  paramsKey.push("timeStamp");
-  paramsKey.push("appSecret");
-  paramsValue["timeStamp"] = new Date().getTime();
-  paramsValue["appSecret"] = "xte0c98e7ccb8fe167e71d1af7bf517e7f";
-  var paramsSort = paramsKey.sort();
-  var sign = "";
-  for (var i = 0; i < paramsSort.length; i++) {
-    sign += paramsValue[paramsSort[i]];
-  }
-  data["timeStamp"] = paramsValue["timeStamp"];
-  data["sign"] = hex_md5(sign);
-  return data;
-}
-
-function getUrlParam(key) {
-  // 获取参数
-  var url = window.location.search;
-  // 正则筛选地址栏
-  var reg = new RegExp("(^|&)" + key + "=([^&]*)(&|$)");
-  // 匹配目标参数
-  var result = url.substr(1).match(reg);
-  //返回参数值
-  return result ? decodeURIComponent(result[2]) : null;
-}
-
 module.exports = {
-  SignParams: SignParams
+  md5: hex_md5
 }

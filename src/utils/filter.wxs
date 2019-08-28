@@ -69,11 +69,18 @@ var DateFr = {
     }
   },
 
-  timeToSeconds: function (time) {
-    var h = DateFr.alignNumber(parseInt((time) / 3600), 2, '0');
-    var m = DateFr.alignNumber(parseInt((time % 3600) / 60), 2, '0');
-    var s = DateFr.alignNumber(parseInt((time % 3600) % 60), 2, '0');
-    return h + ":" + m + ":" + s;
+  timeToSeconds: function (time, fmtStr) {
+    fmtStr = fmtStr || 'hh:mm:ss';
+    fmtStr = fmtStr.replace('hh', function (s) {
+      return DateFr.alignNumber(parseInt((time) / 3600), 2, '0');
+    });
+    fmtStr = fmtStr.replace('mm', function (s) {
+      return DateFr.alignNumber(parseInt((time % 3600) / 60), 2, '0');
+    });
+    fmtStr = fmtStr.replace('ss', function (s) {
+      return DateFr.alignNumber(parseInt((time % 3600) % 60), 2, '0');
+    });
+    return fmtStr;
   }
 }
 

@@ -10,20 +10,23 @@ const srcPath = './src/**';
 const distPath = './dist/';
 const filePath = {
 	sassFiles: [
-		`${srcPath}/*.{sass|scss}`,
-		`!${srcPath}/styles/**/*.{sass|scss}`,
-		`!${srcPath}/_template/*.{sass|scss}`
+		`${srcPath}/*.scss`,
+		`!${srcPath}/assets/styles/**/*.scss`,
+		`!${srcPath}/_template/*.scss`,
+		`!${srcPath}/libs/*`,
 	],
-	jsFiles: [`${srcPath}/*.js`, `!${srcPath}/_template/*.js`, `!${srcPath}/env/*.js`],
-	imgFiles: [`${srcPath}/*.{png,jpg,gif,ico}`],
+	jsFiles: [`${srcPath}/*.js`, `!${srcPath}/_template/*.js`, `!${srcPath}/env/*.js`, `!${srcPath}/libs/*`],
+	imgFiles: [`${srcPath}/*.{png,jpg,gif,ico}`, `!${srcPath}/libs/*`],
 	// wxss,wxml,json文件直接复制
 	copyFiles: [
+		`${srcPath}/*.wxs`,
 		`${srcPath}/*.wxss`,
 		`!${srcPath}/_template/*.wxss`,
 		`${srcPath}/*.wxml`,
 		`!${srcPath}/_template/*.wxml`,
 		`${srcPath}/*.json`,
-		`!${srcPath}/_template/*.json`
+		`!${srcPath}/_template/*.json`,
+		`${srcPath}/libs/**`
 	]
 }
 
@@ -37,7 +40,8 @@ const aliasConfig = {
 	'@Libs': _join('libs'),
 	'@Utils': _join('utils'),
 	'@Components': _join('components'),
-	'@Images': _join('images'),
+	'@Images': _join('assets/images'),
+	'@Styles': _join('assets/styles'),
 }
 
 /** 清除dist目录 */

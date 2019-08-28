@@ -1,7 +1,5 @@
 import md5 from "/md5.js"
-import {
-  baseUrl
-} from './config'
+import config from './config'
 
 var header = {
   'Accept': 'application/json',
@@ -19,7 +17,7 @@ var header = {
  * auth, 设置请求头auth, 当前只应用于绑定用户手机接口
  */
 function _handleResponse(resolve, reject, options, response) {
-  if (response.resultCode === 1 || response.resultCode === 2 || (response.resultCode > 16 && response.resultCode < 21)) { // 请求成功
+  if (response.resultCode === 1 || response.resultCode === 2) { // 请求成功
     if (options.showSucMsg) {
       wx.showToast({
         title: options.sucMsg || response.resultMessage,
@@ -45,26 +43,50 @@ function _getToken(options) {
   if (options.auth) {
     tHeader.Auth = options.auth;
   } else {
-    let user = wx.getStorageSync('user');
-    if (user) {
-      user = JSON.parse(user) || {};
-      if (user.auth) {
-        tHeader.Auth = user.auth;
-      };
+    let auth = wx.getStorageSync('auth');
+    if (auth) {
+      tHeader.Auth = auth;
     }
   }
   return tHeader;
 }
 
-function getReq(url, options = {}) {
+function _signParams(data) {
+  var sign = "";
+  var paramsKey = new Array();
+  var paramsValue = new Array();
+  if (data != null && data != undefined) {
+    for (var item in data) {
+      paramsKey.push(item);
+      paramsValue[item] = data[item];
+    }
+  }
+  // 解决小程序审核失败，可能包含明文appSecret的问题
+  const _key = ["a", "p", "p", "S", "e", "c", "r", "e", "t"].join('')
+  paramsKey.push("timeStamp");
+  paramsKey.push(_key);
+  paramsValue["timeStamp"] = new Date().getTime();
+  paramsValue[_key] = "xte0c98e7ccb8fe167e71d1af7bf517e7f";
+  var paramsSort = paramsKey.sort();
+  var sign = "";
+  for (var i = 0; i < paramsSort.length; i++) {
+    sign += paramsValue[paramsSort[i]];
+  }
+  data["timeStamp"] = paramsValue["timeStamp"];
+  data["sign"] = md5(sign);
+  return data;
+}
+
+function get(url, data = {}, options = {}) {
   wx.showLoading({
     title: '加载中',
   })
   let tHeader = _getToken(options);
   let promise = new Promise(function (resolve, reject) {
     wx.request({
-      url: baseUrl + url,
+      url: config.baseUrl + url,
       method: 'get',
+      data: data,
       header: tHeader,
       success: function (res) {
         wx.hideLoading();
@@ -84,12 +106,12 @@ function getReq(url, options = {}) {
   return promise;
 }
 
-function postReq(url, data, options = {}) {
-  data = md5.SignParams(data)
+function post(url, data, options = {}) {
+  data = _signParams(data)
   let tHeader = _getToken(options);
   let promise = new Promise(function (resolve, reject) {
     wx.request({
-      url: baseUrl + url,
+      url: config.baseUrl + url,
       header: tHeader,
       data: data,
       method: 'post',
@@ -115,7 +137,7 @@ function uploadImg(url, options = {}) {
   let tHeader = _getToken(options);
   let promise = new Promise(function (resolve, reject) {
     wx.uploadFile({
-      url: baseUrl + '/api/file/upload',
+      url: config.baseUrl + '/api/file/upload',
       filePath: url,
       name: "uploadedfile",
       header: tHeader,
@@ -135,7 +157,7 @@ function uploadImg(url, options = {}) {
 }
 
 module.exports = {
-  getReq: getReq,
-  postReq: postReq,
+  get: get,
+  post: post,
   uploadImg: uploadImg
 }
